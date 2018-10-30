@@ -35,9 +35,18 @@ public class UserEndpoints {
     // encryption to json rwaString object(ret. utils Encryption)
     json = Encryption.encryptDecryptXOR(json);
 
-    // Return the user with the status code 200
-    // TODO: What should happen if something breaks down?
-    return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
+
+    // TODO: What should happen if something breaks down? FIX
+    if (user != null) {
+      // Return the user with the status code 200 - successful
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
+    } else {
+      // Return the user with the status code 400 - client error
+      return Response.status(400).entity("Could not find the user, please try again").build();
+    } //else {
+      // Return the user with the status code 500 - Internal Server Error
+      //return Response.status(500).entity("The server encountered an unexpected condition which prevented it from fulfilling the request").build();
+    //}
   }
 
   /** @return Responses */
