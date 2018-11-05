@@ -4,9 +4,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import model.User;
-import sun.tools.jstat.Token;
 import utils.Hashing;
 import utils.Log;
+
 
 public class UserController {
 
@@ -54,7 +54,7 @@ public class UserController {
     return user;
   }
 
-  public static User getUserEmail(String email) {
+  public static User getLogin(User user) {
 
     // Check for connection
     if (dbCon == null) {
@@ -62,16 +62,16 @@ public class UserController {
     }
 
     // Build the query for DB
-    String sql = "SELECT * FROM user where email=" + email;
+    String sql = "SELECT * FROM user where email=" + user.getEmail() + "AND password="+ user.getPassword();
 
     // Actually do the query
     ResultSet rs = dbCon.query(sql);
-    User user = null;
+    User userLogin = null;
 
     try {
       // Get first object, since we only have one
       if (rs.next()) {
-        user =
+        userLogin =
                 new User(
                         rs.getInt("id"),
                         rs.getString("first_name"),
@@ -79,8 +79,10 @@ public class UserController {
                         rs.getString("password"),
                         rs.getString("email"));
 
-        // return the create object
-        return user;
+        if (userLogin != null){
+
+        }
+
       } else {
         System.out.println("No user found");
       }
@@ -91,6 +93,7 @@ public class UserController {
     // Return null
     return user;
   }
+
 
   /**
    * Get all users in database
@@ -173,7 +176,21 @@ public class UserController {
     return user;
   }
 
-  //public static Token createToken(Token token){
+  public static boolean deleteUser(int id){
 
-  //}
+    // Write in log that we've reach this step
+    Log.writeLog(UserController.class.getName(),id,"Actually deleting a user in DB",0);
+
+    // Check for DB Connection
+    if(dbCon == null){
+      dbCon = new DatabaseController();
+    }
+
+    String sql = "DELETE FROM user WHERE id =" + id;
+
+    return dbCon.deleteUpdate(sql);
+
+  }
+
+
 }

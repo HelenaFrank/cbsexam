@@ -11,6 +11,12 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="cbsexam" target="7" />
+      <module name="jjwt-api" target="1.7" />
+      <module name="jjwt-extensions" target="1.7" />
+      <module name="jjwt-impl" target="1.7" />
+      <module name="jjwt-jackson" target="1.7" />
+      <module name="jjwt-orgjson" target="1.7" />
+      <module name="jjwt-root" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

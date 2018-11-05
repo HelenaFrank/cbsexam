@@ -16,6 +16,7 @@ import utils.Encryption;
 
 @Path("order")
 public class OrderEndpoints {
+  OrderCache orderCache = new OrderCache();
 
   /**
    * @param idOrder
@@ -38,8 +39,6 @@ public class OrderEndpoints {
     // Return a response with status 200 and JSON as type
     return Response.status(200).type(MediaType.APPLICATION_JSON).entity(json).build();
   }
-
-  OrderCache orderCache = new OrderCache();
 
   /** @return Responses */
   @GET

@@ -17,6 +17,7 @@ import utils.Log;
 
 @Path("user")
 public class UserEndpoints {
+  UserCache userCache = new UserCache();
 
   /**
    * @param idUser
@@ -49,8 +50,6 @@ public class UserEndpoints {
       //return Response.status(500).entity("The server encountered an unexpected condition which prevented it from fulfilling the request").build();
     //}
   }
-
-  UserCache userCache = new UserCache();
 
   /** @return Responses */
   @GET
@@ -101,27 +100,39 @@ public class UserEndpoints {
   @POST
   @Path("/login")
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response loginUser(String email) {
+  public Response loginUser(String body) {
 
-    User currentUser = new Gson().fromJson(email, User.class);
-    User databaseUser = UserController.getUserEmail(currentUser.getEmail());
+    User user = new Gson().fromJson(body, User.class);
+
+    User currentUser = new Gson().fromJson(String.valueOf(id), User.class);
+    User databaseUser = UserController.get(currentUser.getId());
 
     if (currentUser == databaseUser) {
       // Return a response with status 200 and JSON as type
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(databaseUser).build();
     } else {
-      return Response.status(400).entity("Endpoint not implemented yet").build();
+      // Return the user with the status code 400 - client error
+      return Response.status(400).entity("The endpoint are not implemented yet").build();
     }
 
   }
 
 
-  // TODO: Make the system able to delete users
-  public Response deleteUser(String x) {
+  // TODO: Make the system able to delete users: FIXED
+  @POST
+  @Path("/delete/{idUser}")
+  public Response deleteUser(@PathParam("idUser") int id) {
 
-    // Return a response with status 200 and JSON as type
-    return Response.status(400).entity("Endpoint not implemented yet").build();
+    if (UserController.deleteUser(id)) {
+      // Return a response with status 200 and JSON as type
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity("The user are deleted").build();
+    } else {
+      // Return the user with the status code 400 - client error  
+      return Response.status(400).entity("Endpoint not implemented yet").build();
+    }
   }
+
+
 
   // TODO: Make the system able to update users
   public Response updateUser(String x) {

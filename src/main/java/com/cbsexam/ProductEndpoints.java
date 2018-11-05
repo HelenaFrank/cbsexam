@@ -16,6 +16,7 @@ import utils.Encryption;
 
 @Path("product")
 public class ProductEndpoints {
+  ProductCache productCache = new ProductCache();
 
   /**
    * @param idProduct
@@ -38,10 +39,6 @@ public class ProductEndpoints {
     // Return a response with status 200 and JSON as type
     return Response.status(200).type(MediaType.TEXT_PLAIN_TYPE).entity(json).build();
   }
-
-
-  ProductCache productCache = new ProductCache();
-
 
   /** @return Responses */
   @GET
