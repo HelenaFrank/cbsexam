@@ -60,7 +60,7 @@ public class UserController {
     return user;
   }
 
-  public static User getLogin(User user) {
+  public static String getLogin(User user) {
 
     // Check for connection
     if (dbCon == null) {
@@ -68,11 +68,12 @@ public class UserController {
     }
 
     // Build the query for DB
-    String sql = "SELECT * FROM user where email=" + user.getEmail() + "AND password="+ user.getPassword();
+    String sql = "SELECT * FROM user where email=" + user.getEmail() + "AND password="+ Hashing.shaWithSalt(user.getPassword());
 
     // Actually do the query
     ResultSet rs = dbCon.query(sql);
-    User userLogin = null;
+    User userLogin;
+    String token = null;
 
     try {
       // Get first object, since we only have one
@@ -82,17 +83,20 @@ public class UserController {
                         rs.getInt("id"),
                         rs.getString("first_name"),
                         rs.getString("last_name"),
-                        Hashing.shaWithSalt(rs.getString("password")),
+                        rs.getString("password"),
                         rs.getString("email"));
 
         if (userLogin != null){
           try {
             Algorithm algorithm = Algorithm.HMAC256("secret");
-            String token = JWT.create()
+            token = JWT.create()
+                    .withClaim("userId", user.getId())
                     .withIssuer("auth0")
                     .sign(algorithm);
           } catch (JWTCreationException exception){
             //Invalid Signing configuration / Couldn't convert Claims.
+          } finally {
+            return token;
           }
         }
 
@@ -104,7 +108,7 @@ public class UserController {
     }
 
     // Return null
-    return user;
+    return "";
   }
 
 
@@ -210,6 +214,11 @@ public class UserController {
 
 
   public static User updateUser(User user){
+
+    // Check for DB Connection
+    if(dbCon == null){
+      dbCon = new DatabaseController();
+    }
 
     try {
       PreparedStatement updateUser = DatabaseController.getConnection().prepareStatement("UPDTAE user SET first_name = ?, last_name = ?, password = ?, email = ? WHERE id = ?");

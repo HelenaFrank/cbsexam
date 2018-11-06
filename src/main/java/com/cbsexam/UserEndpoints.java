@@ -3,6 +3,7 @@ package com.cbsexam;
 import cache.UserCache;
 import com.google.gson.Gson;
 import controllers.UserController;
+
 import java.util.ArrayList;
 import javax.jws.soap.SOAPBinding;
 import javax.ws.rs.*;
@@ -27,25 +28,31 @@ public class UserEndpoints {
     // Use the ID to get the user from the controller.
     User user = UserController.getUser(idUser);
 
-    // TODO: Add Encryption to JSON: FIXED
-    // Convert the user object to json in order to return the object
-    String json = new Gson().toJson(user);
+    try {
+      // TODO: Add Encryption to JSON: FIXED
+      // Convert the user object to json in order to return the object
+      String json = new Gson().toJson(user);
 
-    // encryption to json rwaString object(ret. utils Encryption)
-    json = Encryption.encryptDecryptXOR(json);
+      // encryption to json rwaString object(ret. utils Encryption)
+      json = Encryption.encryptDecryptXOR(json);
 
+      // TODO: What should happen if something breaks down?: FIXED
 
-    // TODO: What should happen if something breaks down?: FIXED
-    if (user != null) {
-      // Return the user with the status code 200 - successful
-      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
-    } else {
-      // Return the user with the status code 400 - client error
-      return Response.status(400).entity("Could not find the user, please try again").build();
-    } //else {
+      if (user != null) {
+        // Return the user with the status code 200 - successful
+        return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
+      } else {
+        // Return the user with the status code 400 - client error
+        return Response.status(400).entity("Could not find the user, please try again").build();
+      }
+
+    } catch (Exception e) {
+      e.getStackTrace();
+
       // Return the user with the status code 500 - Internal Server Error
-      //return Response.status(500).entity("The server encountered an unexpected condition which prevented it from fulfilling the request").build();
-    //}
+      return Response.status(500).entity("The server encountered an unexpected condition which prevented it from fulfilling the request").build();
+
+    }
   }
 
   /** @return Responses */
@@ -93,7 +100,7 @@ public class UserEndpoints {
     }
   }
 
-  // TODO: Make the system able to login users and assign them a token to use throughout the system.
+  // TODO: Make the system able to login users and assign them a token to use throughout the system: FIXED
   @POST
   @Path("/login")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -101,12 +108,11 @@ public class UserEndpoints {
 
     User user = new Gson().fromJson(body, User.class);
 
-    User currentUser = new Gson().fromJson(String.valueOf(id), User.class);
-    User databaseUser = UserController.get(currentUser.getId());
+    String token = UserController.getLogin(user);
 
-    if (currentUser == databaseUser) {
+    if (token != "") {
       // Return a response with status 200 and JSON as type
-      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(databaseUser).build();
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(token).build();
     } else {
       // Return the user with the status code 400 - client error
       return Response.status(400).entity("The endpoint are not implemented yet").build();
@@ -123,6 +129,7 @@ public class UserEndpoints {
 
     User deleteUser1 = UserController.getUser(idUser);
     User deleteUser2 = UserController.deleteUser(deleteUser1);
+
     String json = new Gson().toJson(deleteUser2);
 
     if (deleteUser2 != null) {
@@ -142,7 +149,6 @@ public class UserEndpoints {
   public Response updateUser(String body) {
 
     User UserUpdate = new Gson().fromJson(body, User.class);
-
     User updateUser = UserController.updateUser(UserUpdate);
 
     String json = new Gson().toJson(updateUser);
