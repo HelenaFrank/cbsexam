@@ -1,11 +1,17 @@
 package controllers;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
 import model.User;
 import utils.Hashing;
 import utils.Log;
+
 
 
 public class UserController {
@@ -76,11 +82,18 @@ public class UserController {
                         rs.getInt("id"),
                         rs.getString("first_name"),
                         rs.getString("last_name"),
-                        rs.getString("password"),
+                        Hashing.shaWithSalt(rs.getString("password")),
                         rs.getString("email"));
 
         if (userLogin != null){
-
+          try {
+            Algorithm algorithm = Algorithm.HMAC256("secret");
+            String token = JWT.create()
+                    .withIssuer("auth0")
+                    .sign(algorithm);
+          } catch (JWTCreationException exception){
+            //Invalid Signing configuration / Couldn't convert Claims.
+          }
         }
 
       } else {
@@ -176,20 +189,43 @@ public class UserController {
     return user;
   }
 
-  public static boolean deleteUser(int id){
-
-    // Write in log that we've reach this step
-    Log.writeLog(UserController.class.getName(),id,"Actually deleting a user in DB",0);
+  public static User deleteUser(User user){
 
     // Check for DB Connection
     if(dbCon == null){
       dbCon = new DatabaseController();
     }
 
-    String sql = "DELETE FROM user WHERE id =" + id;
+    try {
+      PreparedStatement deleteUser = dbCon.getConnection().prepareStatement("DELETE FROM user WHERE id =" + id);
+      deleteUser.setInt(1, user.getId);
 
-    return dbCon.deleteUpdate(sql);
+      deleteUser.executeUpdate();
 
+    } catch (SQLException sql){
+      sql.getStackTrace();
+      }
+      return user;
+    }
+
+
+  public static User updateUser(User user){
+
+    try {
+      PreparedStatement updateUser = DatabaseController.getConnection().prepareStatement("UPDTAE user SET first_name = ?, last_name = ?, password = ?, email = ? WHERE id = ?");
+
+      updateUser.setString(1, user.getFirstname());
+      updateUser.setString(2, user.getLastname());
+      updateUser.setString(3, user.getPassword());
+      updateUser.setString(4, user.getEmail());
+      updateUser.setInt(5, user.getId());
+
+      updateUser.executeUpdate();
+
+    } catch (SQLException sql) {
+      sql.printStackTrace();
+    }
+    return user;
   }
 
 

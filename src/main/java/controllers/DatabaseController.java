@@ -111,20 +111,28 @@ public class DatabaseController {
     return result;
   }
 
-  public boolean deleteUpdate(String sql){
+  public boolean deleteUser(String sql){
 
+    // Check that we have connection
     if (connection == null){
       connection = getConnection();
     }
 
     try {
       PreparedStatement deleteUser = connection.prepareStatement(sql);
-      deleteUser.executeUpdate();
-      return true;
+      deleteUser.setString(1, sql);
+
+      int countOfRows = deleteUser.executeUpdate();
+
+      if (countOfRows == 1){
+        return true;
+      }
+
     } catch (SQLException e){
       e.getErrorCode();
-      return false;
-    }
 
+    } return false;
   }
+
+
 }

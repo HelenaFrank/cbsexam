@@ -4,11 +4,8 @@ import cache.UserCache;
 import com.google.gson.Gson;
 import controllers.UserController;
 import java.util.ArrayList;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.jws.soap.SOAPBinding;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import model.User;
@@ -119,13 +116,18 @@ public class UserEndpoints {
 
 
   // TODO: Make the system able to delete users: FIXED
-  @POST
+  @DELETE
   @Path("/delete/{idUser}")
-  public Response deleteUser(@PathParam("idUser") int id) {
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response deleteUser(@PathParam("idUser") int idUser) {
 
-    if (UserController.deleteUser(id)) {
+    User deleteUser1 = UserController.getUser(idUser);
+    User deleteUser2 = UserController.deleteUser(deleteUser1);
+    String json = new Gson().toJson(deleteUser2);
+
+    if (deleteUser2 != null) {
       // Return a response with status 200 and JSON as type
-      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity("The user are deleted").build();
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
     } else {
       // Return the user with the status code 400 - client error  
       return Response.status(400).entity("Endpoint not implemented yet").build();
@@ -133,12 +135,26 @@ public class UserEndpoints {
   }
 
 
+  // TODO: Make the system able to update users: FIXED
+  @PUT
+  @Path("/{idUser}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response updateUser(String body) {
 
-  // TODO: Make the system able to update users
-  public Response updateUser(String x) {
+    User UserUpdate = new Gson().fromJson(body, User.class);
 
-    // Return a response with status 200 and JSON as type
-    return Response.status(400).entity("Endpoint not implemented yet").build();
+    User updateUser = UserController.updateUser(UserUpdate);
+
+    String json = new Gson().toJson(updateUser);
+
+    if (updateUser != null) {
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
+    } else {
+      // Return a response with status 200 and JSON as type
+      return Response.status(400).entity("Endpoint not implemented yet").build();
+    }
   }
+
+
 }
 
