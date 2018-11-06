@@ -197,8 +197,8 @@ public class UserController {
     }
 
     try {
-      PreparedStatement deleteUser = dbCon.getConnection().prepareStatement("DELETE FROM user WHERE id =" + id);
-      deleteUser.setInt(1, user.getId);
+      PreparedStatement deleteUser = dbCon.getConnection().prepareStatement("DELETE FROM user WHERE id = ?");
+      deleteUser.setInt(1, user.getId());
 
       deleteUser.executeUpdate();
 
