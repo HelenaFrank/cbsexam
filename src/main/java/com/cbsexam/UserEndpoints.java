@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import controllers.UserController;
 
 import java.util.ArrayList;
-import javax.jws.soap.SOAPBinding;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -15,7 +14,7 @@ import utils.Log;
 
 @Path("user")
 public class UserEndpoints {
-  UserCache userCache = new UserCache();
+  public static UserCache userCache = new UserCache();
 
   /**
    * @param idUser
@@ -57,14 +56,14 @@ public class UserEndpoints {
 
   /** @return Responses */
   @GET
-  @Path("/")
+  @Path("/users")
   public Response getUsers() {
 
     // Write to log that we are here
     Log.writeLog(this.getClass().getName(), this, "Get all users", 0);
 
     // Get a list of users
-    ArrayList<User> users = userCache.getUsers(true);
+    ArrayList<User> users = userCache.getUsers(false);
 
     // TODO: Add Encryption to JSON: FIXED
     // Transfer users to json in order to return it to the user
@@ -78,12 +77,13 @@ public class UserEndpoints {
   }
 
   @POST
-  @Path("/")
+  @Path("/create")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response createUser(String body) {
 
     // Read the json from body and transfer it to a user class
     User newUser = new Gson().fromJson(body, User.class);
+    newUser.setPassword(newUser.getPassword());
 
     // Use the controller to add the user
     User createUser = UserController.createUser(newUser);
@@ -144,7 +144,7 @@ public class UserEndpoints {
 
   // TODO: Make the system able to update users: FIXED
   @PUT
-  @Path("/{idUser}")
+  @Path("/update/{idUser}")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response updateUser(String body) {
 

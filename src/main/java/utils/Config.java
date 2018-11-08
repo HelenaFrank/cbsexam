@@ -64,6 +64,7 @@ public final class Config {
     return ENCRYPTION_KEY.toCharArray();
   }
 
+
   public static String getSolrHost() {
     return SOLR_HOST;
   }

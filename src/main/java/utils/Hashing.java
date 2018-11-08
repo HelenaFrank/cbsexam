@@ -3,12 +3,15 @@ package utils;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import model.User;
 import org.bouncycastle.util.encoders.Hex;
 
 public final class Hashing {
 
   // TODO: You should add a salt and make this secure
   public static String md5(String rawString) {
+
     try {
 
       // We load the hashing algoritm we wish to use.
@@ -25,7 +28,7 @@ public final class Hashing {
         sb.append(Integer.toHexString((byteArray[i] & 0xFF) | 0x100).substring(1, 3));
       }
 
-      //Convert back to a single string and return
+      //Convert back to a single string, add salt and return
       return sb.toString();
 
     } catch (java.security.NoSuchAlgorithmException e) {

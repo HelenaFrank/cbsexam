@@ -16,7 +16,7 @@ import utils.Encryption;
 
 @Path("order")
 public class OrderEndpoints {
-  OrderCache orderCache = new OrderCache();
+  public static OrderCache orderCache = new OrderCache();
 
   /**
    * @param idOrder
@@ -46,7 +46,7 @@ public class OrderEndpoints {
   public Response getOrders() {
 
     // Call our controller-layer in order to get the order from the DB
-    ArrayList<Order> orders = orderCache.getOrders(true);
+    ArrayList<Order> orders = orderCache.getOrders(false);
 
     // TODO: Add Encryption to JSON: FIXED
     // We convert the java object to json with GSON library imported in Maven

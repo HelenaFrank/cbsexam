@@ -1,5 +1,7 @@
 package model;
 
+import utils.Hashing;
+
 public class User {
 
   public int id;
@@ -7,13 +9,13 @@ public class User {
   public String lastname;
   public String email;
   private String password;
-  private long createdTime;
+  private static long createdTime;
 
   public User(int id, String firstname, String lastname, String password, String email) {
     this.id = id;
     this.firstname = firstname;
     this.lastname = lastname;
-    this.password = password;
+    this.password = Hashing.shaWithSalt(password);
     this.email = email;
   }
 
@@ -54,10 +56,10 @@ public class User {
   }
 
   public void setPassword(String password) {
-    this.password = password;
+    this.password = Hashing.shaWithSalt(password);
   }
 
-  public long getCreatedTime() {
+  public static long getCreatedTime() {
     return createdTime;
   }
 

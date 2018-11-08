@@ -11,7 +11,7 @@ public final class Encryption {
       // TODO: Create a more complex code and store it somewhere better: FIXED
       char[] key = Config.getEncryptionKey();
 
-      // Stringbuilder enables you to play around with strings and make useful stuff
+      // String builder enables you to play around with strings and make useful stuff
       StringBuilder thisIsEncrypted = new StringBuilder();
 
       // TODO: This is where the magic of XOR is happening. Are you able to explain what is going on?
