@@ -5,9 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import cache.OrderCache;
 import com.cbsexam.OrderEndpoints;
-import com.cbsexam.ProductEndpoints;
 import model.Address;
 import model.LineItem;
 import model.Order;
