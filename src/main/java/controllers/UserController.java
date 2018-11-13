@@ -5,11 +5,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import cache.UserCache;
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
-import com.cbsexam.ProductEndpoints;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.cbsexam.UserEndpoints;
 import model.User;
 import utils.Hashing;
@@ -198,7 +200,7 @@ public class UserController {
     return user;
   }
 
-  public static User deleteUser(User user){
+  public static void deleteUser(User user){
 
     // Check for DB Connection
     if(dbCon == null){
@@ -206,17 +208,16 @@ public class UserController {
     }
 
     try {
-      PreparedStatement deleteUser = dbCon.getConnection().prepareStatement("DELETE FROM user WHERE id = ?");
-      deleteUser.setInt(1, user.getId());
+        PreparedStatement deleteUser = dbCon.getConnection().prepareStatement("DELETE FROM user WHERE id = ?");
+        deleteUser.setInt(1, user.getId());
 
-      deleteUser.executeUpdate();
+        deleteUser.executeUpdate();
 
     } catch (SQLException sql){
       sql.getStackTrace();
       }
-      return user;
-    }
 
+    }
 
   public static User updateUser(User user){
 
@@ -242,5 +243,58 @@ public class UserController {
     return user;
   }
 
+  public static String getTokenVerifier(User user) {
+
+    // Check for connection
+    if (dbCon == null) {
+      dbCon = new DatabaseController();
+    }
+
+    // Build the query for DB
+    String sql = "SELECT * FROM user where id=" + user.getId();
+
+    // Actually do the query
+    ResultSet rs = dbCon.query(sql);
+    User sessionToken;
+    String token = user.getToken();
+
+    try {
+      // Get first object, since we only have one
+      if (rs.next()) {
+        sessionToken =
+                new User(
+                        rs.getInt("id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("password"),
+                        rs.getString("email"));
+
+        if (sessionToken != null){
+          try {
+            Algorithm algorithm = Algorithm.HMAC256("secret");
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .withIssuer("auth0")
+                    .build(); //Reusable verifier instance
+            DecodedJWT jwt = verifier.verify(token);
+            Claim claim = jwt.getClaim("userId");
+
+            if (user.getId() == claim.asInt()) {
+              return token;
+            }
+          } catch (JWTVerificationException exception){
+            System.out.println(exception.getMessage());
+          }
+        }
+
+      } else {
+        System.out.println("No user found");
+      }
+    } catch (SQLException ex) {
+      System.out.println(ex.getMessage());
+    }
+
+    // Return null
+    return "";
+  }
 
 }

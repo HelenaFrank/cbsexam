@@ -9,6 +9,7 @@ public class User {
   public String lastname;
   public String email;
   private String password;
+  private String token;
   private static long createdTime;
 
   public User(int id, String firstname, String lastname, String password, String email) {
@@ -65,5 +66,13 @@ public class User {
 
   public void setCreatedTime(long createdTime) {
     this.createdTime = createdTime;
+  }
+
+  public String getToken() {
+    return token;
+  }
+
+  public void setToken(String token) {
+    this.token = token;
   }
 }
