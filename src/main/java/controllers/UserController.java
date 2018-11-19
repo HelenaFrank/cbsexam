@@ -73,7 +73,7 @@ public class UserController {
     }
 
     // Build the query for DB
-    String sql = "SELECT * FROM user where email=" + user.getEmail() + "AND password="+ Hashing.shaWithSalt(user.getPassword());
+    String sql = "SELECT * FROM user where email= '" + user.getEmail() + "' AND (password= '"+ Hashing.shaWithSalt(user.getPassword()) + "' OR password = '" + user.getPassword() + "')";
 
     // Actually do the query
     ResultSet rs = dbCon.query(sql);
@@ -96,6 +96,7 @@ public class UserController {
             Algorithm algorithm = Algorithm.HMAC256("secret");
             token = JWT.create()
                     .withClaim("userId", user.getId())
+                    .withClaim("exp", System.currentTimeMillis() + 1000000000)
                     .withIssuer("auth0")
                     .sign(algorithm);
           } catch (JWTCreationException exception){
@@ -227,11 +228,11 @@ public class UserController {
     }
 
     try {
-      PreparedStatement updateUser = DatabaseController.getConnection().prepareStatement("UPDTAE user SET first_name = ?, last_name = ?, password = ?, email = ? WHERE id = ?");
+      PreparedStatement updateUser = dbCon.getConnection().prepareStatement("UPDTAE user SET first_name = ?, last_name = ?, password = ?, email = ? WHERE id = ?");
 
       updateUser.setString(1, user.getFirstname());
       updateUser.setString(2, user.getLastname());
-      updateUser.setString(3, user.getPassword());
+      updateUser.setString(3, Hashing.shaWithSalt(user.getPassword()));
       updateUser.setString(4, user.getEmail());
       updateUser.setInt(5, user.getId());
 

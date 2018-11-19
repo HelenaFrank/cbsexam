@@ -42,7 +42,7 @@ public class ProductEndpoints {
 
   /** @return Responses */
   @GET
-  @Path("/")
+  @Path("/Products")
   public Response getProducts() {
 
     // Call our controller-layer in order to get the order from the DB
@@ -60,7 +60,7 @@ public class ProductEndpoints {
   }
 
   @POST
-  @Path("/")
+  @Path("/Product")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response createProduct(String body) {
 

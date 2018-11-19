@@ -10,6 +10,13 @@ import org.bouncycastle.util.encoders.Hex;
 public final class Hashing {
 
   // TODO: You should add a salt and make this secure
+  public static String md5WithSalt(String password) {
+    long salt = User.getCreatedTime();
+    String hashedPassword = password + salt;
+    return md5(hashedPassword);
+  }
+
+
   public static String md5(String rawString) {
 
     try {
@@ -42,7 +49,7 @@ public final class Hashing {
 
   // TODO: You should add a salt and make this secure: FIXED
   public static String shaWithSalt(String password){
-    String salt = "pepper";
+    String salt = Config.getSALT();
     String hashedPassword = password + salt;
     return sha(hashedPassword);
   }

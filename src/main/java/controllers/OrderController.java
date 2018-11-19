@@ -140,7 +140,7 @@ public class OrderController {
 
     // TODO: Enable transactions in order for us to not save the order if somethings fails for some of the other inserts: (FIXED)
 
-    Connection connection = null;
+    Connection connection = DatabaseController.getConnection();
 
     try {
       connection.setAutoCommit(false);
