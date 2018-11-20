@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -93,10 +94,12 @@ public class UserController {
 
         if (userLogin != null){
           try {
+            Date expire = new Date();
+            expire.setTime(System.currentTimeMillis() + 100000000L);
             Algorithm algorithm = Algorithm.HMAC256("secret");
             token = JWT.create()
                     .withClaim("userId", user.getId())
-                    .withClaim("exp", System.currentTimeMillis() + 1000000000)
+                    .withExpiresAt(expire)
                     .withIssuer("auth0")
                     .sign(algorithm);
           } catch (JWTCreationException exception){
@@ -295,7 +298,7 @@ public class UserController {
     }
 
     // Return null
-    return "";
+    return token;
   }
 
 }
