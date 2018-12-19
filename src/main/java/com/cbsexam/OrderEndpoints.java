@@ -60,27 +60,27 @@ public class OrderEndpoints {
   }
 
   @POST
-  @Path("/create")
+  @Path("/CreateOrder")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response createOrder(String body) {
 
     // Read the json from body and transfer it to a order class
     Order newOrder = new Gson().fromJson(body, Order.class);
 
-    // Use the controller to add the user
+    // Use the controller to add the order
     Order createdOrder = OrderController.createOrder(newOrder);
 
-    // Get the user back with the added ID and return it to the user
+    // Get the order back with the added ID and return it to the order
     String json = new Gson().toJson(createdOrder);
 
-    // Return the data to the user
+    // Return the data to the order
     if (createdOrder != null) {
       // Return a response with status 200 and JSON as type
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
     } else {
 
       // Return a response with status 400 and a message in text
-      return Response.status(400).entity("Could not create user").build();
+      return Response.status(400).entity("Could not create order").build();
     }
   }
 }

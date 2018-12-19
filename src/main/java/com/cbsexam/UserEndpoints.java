@@ -56,7 +56,7 @@ public class UserEndpoints {
 
   /** @return Responses */
   @GET
-  @Path("/users")
+  @Path("/Users")
   public Response getUsers() {
 
     // Write to log that we are here
@@ -77,7 +77,7 @@ public class UserEndpoints {
   }
 
   @POST
-  @Path("/create")
+  @Path("/Create")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response createUser(String body) {
 
@@ -102,7 +102,7 @@ public class UserEndpoints {
 
   // TODO: Make the system able to login users and assign them a token to use throughout the system: FIXED
   @POST
-  @Path("/login")
+  @Path("/Login")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response loginUser(String body) {
 
@@ -115,7 +115,7 @@ public class UserEndpoints {
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(token).build();
     } else {
       // Return the user with the status code 400 - client error
-      return Response.status(400).entity("The endpoint are not implemented yet").build();
+      return Response.status(400).entity("The endpoint is not implemented yet").build();
     }
 
   }
@@ -123,7 +123,7 @@ public class UserEndpoints {
 
   // TODO: Make the system able to delete users: FIXED
   @DELETE
-  @Path("/delete")
+  @Path("/Delete")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response deleteUser(String body) {
 
@@ -144,7 +144,7 @@ public class UserEndpoints {
 
   // TODO: Make the system able to update users: FIXED
   @PUT
-  @Path("/update")
+  @Path("/Update")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response updateUser(String body) {
 

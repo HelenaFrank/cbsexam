@@ -74,7 +74,7 @@ public class UserController {
     }
 
     // Build the query for DB
-    String sql = "SELECT * FROM user where email= '" + user.getEmail() + "' AND (password= '"+ Hashing.shaWithSalt(user.getPassword()) + "' OR password = '" + user.getPassword() + "')";
+    String sql = "SELECT * FROM user where email= '" + user.getEmail() + "' AND (password= '"+ Hashing.shaWithSalt(user.getPassword()) + "')";
 
     // Actually do the query
     ResultSet rs = dbCon.query(sql);

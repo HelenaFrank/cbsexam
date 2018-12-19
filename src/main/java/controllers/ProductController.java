@@ -145,13 +145,13 @@ public class ProductController {
             + product.getName()
             + "', '"
             + product.getSku()
-            + "', '"
+            + "', "
             + product.getPrice()
-            + "', '"
+            + ", '"
             + product.getDescription()
             + "', "
             + product.getStock()
-            + "', "
+            + ", "
             + product.getCreatedTime()
             + ")");
 
