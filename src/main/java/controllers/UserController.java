@@ -51,7 +51,8 @@ public class UserController {
                 rs.getString("first_name"),
                 rs.getString("last_name"),
                 rs.getString("password"),
-                rs.getString("email"));
+                rs.getString("email"),
+                rs.getString("created_at"));
 
         // return the create object
         return user;
@@ -90,7 +91,8 @@ public class UserController {
                         rs.getString("first_name"),
                         rs.getString("last_name"),
                         rs.getString("password"),
-                        rs.getString("email"));
+                        rs.getString("email"),
+                        rs.getString("created_at"));
 
         if (userLogin != null){
           try {
@@ -149,7 +151,8 @@ public class UserController {
                 rs.getString("first_name"),
                 rs.getString("last_name"),
                 rs.getString("password"),
-                rs.getString("email"));
+                rs.getString("email"),
+                rs.getString("created_at"));
 
         // Add element to list
         users.add(user);
@@ -168,7 +171,7 @@ public class UserController {
     Log.writeLog(UserController.class.getName(), user, "Actually creating a user in DB", 0);
 
     // Set creation time for user.
-    user.setCreatedTime(System.currentTimeMillis() / 1000L);
+    user.setCreatedTime(String.valueOf(System.currentTimeMillis() / 1000L));
 
     // Check for DB Connection
     if (dbCon == null) {
@@ -271,7 +274,8 @@ public class UserController {
                         rs.getString("first_name"),
                         rs.getString("last_name"),
                         rs.getString("password"),
-                        rs.getString("email"));
+                        rs.getString("email"),
+                        rs.getString("created_at"));
 
         if (sessionToken != null){
           try {

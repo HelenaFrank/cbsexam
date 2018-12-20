@@ -10,14 +10,15 @@ public class User {
   public String email;
   private String password;
   private String token;
-  private static long createdTime;
+  private static String created_at;
 
-  public User(int id, String firstname, String lastname, String password, String email) {
+  public User(int id, String firstname, String lastname, String password, String email, String created_at) {
     this.id = id;
     this.firstname = firstname;
     this.lastname = lastname;
     this.password = Hashing.shaWithSalt(password);
     this.email = email;
+    this.created_at = created_at;
   }
 
   public int getId() {
@@ -57,15 +58,15 @@ public class User {
   }
 
   public void setPassword(String password) {
-    this.password = Hashing.shaWithSalt(password);
+    this.password = password;
   }
 
-  public static long getCreatedTime() {
-    return createdTime;
+  public static String getCreatedTime() {
+    return created_at;
   }
 
-  public void setCreatedTime(long createdTime) {
-    this.createdTime = createdTime;
+  public void setCreatedTime(String created_at) {
+    this.created_at = created_at;
   }
 
   public String getToken() {
