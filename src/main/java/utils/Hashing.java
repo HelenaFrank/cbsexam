@@ -9,7 +9,7 @@ import org.bouncycastle.util.encoders.Hex;
 
 public final class Hashing {
 
-  // TODO: You should add a salt and make this secure: FIXED
+  // TODO: You should add a salt and make this secure: FIXED (NOT IN USE)
   public static String md5WithSalt(String password) {
     String salt = User.getCreatedTime();
     String hashedPassword = password + salt;

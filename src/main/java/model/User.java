@@ -16,7 +16,7 @@ public class User {
     this.id = id;
     this.firstname = firstname;
     this.lastname = lastname;
-    this.password = Hashing.shaWithSalt(password);
+    this.password = password;
     this.email = email;
     this.created_at = created_at;
   }

@@ -301,7 +301,7 @@ public class UserController {
       System.out.println(ex.getMessage());
     }
 
-    // Return null
+    // Return token
     return token;
   }
 
